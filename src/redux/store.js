@@ -4,6 +4,7 @@ import destinationFlightsReducer, { addDestinations } from './destinationFlights
 import brandReducer from './brand'
 import flightReducer from './flight'
 import flightNoReducer from './flightNo'
+import { api } from './fetchAllData';
 import finalArrayReducer, { replacefinalArray } from './finalArray'
 import displayArrayReducer, { replacedisplayArray } from './displayArray'
 import finalArrayDupReducer, { replacefinalArrayDup } from './finalArrayDup'
@@ -13,9 +14,10 @@ import returnFlightArrayReducer, { joinreturnFlightsArray } from './returnFlight
 import priceFilterReducer, { updateAbsoluteMaxPrice, updateMinPrice } from './priceFilter'
 import allDataReducer, { setAllData } from './allData'
 import { GetAllBrands, GetAllFlights, GetAllReturns, InitialDisplayFunction, InitialReturnHandlerFunction, getAllDestinations, setAbsoluteMaxPrice, setMinPrice } from './HelperFunctions'
+import { setupListeners } from '@reduxjs/toolkit/query'
 const store = configureStore({
   reducer: {
-    allData:allDataReducer,
+    allData: allDataReducer,
     destinationFlights: destinationFlightsReducer,
     brand: brandReducer,
     flight: flightReducer,
@@ -23,18 +25,20 @@ const store = configureStore({
     finalArray: finalArrayReducer,
     displayArray: displayArrayReducer,
     finalArrayDup: finalArrayDupReducer,
+    [api.reducerPath]: api.reducer,
     allBrandsArray: allBrandsArrayReducer,
     allFlightsArray: allFlightsArrayReducer,
     returnFlightArray: returnFlightArrayReducer,
     priceFilter: priceFilterReducer,
   },
-  middleware: () => [thunk],  // Correctly applying redux-thunk middleware
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk).concat(api.middleware),
+  // Correctly applying redux-thunk middleware
 });
 
 const fetchData = () => {
   return async (dispatch) => {
     try {
-      const response = await fetch('http://localhost:3000/CatalogProductOfferingsResponse');
+      const response = await fetch('http://localhost:3004/CatalogProductOfferingsResponse');
       const X = await response.json();
 
       // Dispatch the fetched data to the reducers
@@ -54,5 +58,6 @@ const fetchData = () => {
   };
 };
 store.dispatch(fetchData());
+setupListeners(store.dispatch);
 
 export default store;

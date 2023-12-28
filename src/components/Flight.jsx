@@ -4,10 +4,11 @@ import Filters from "./Filters/Filters";
 import AllOffering from "./Offerings/AllOffering";
 import FinalOfferingsUpdater from "./Utils/FinalOfferingsUpdater";
 import { useDispatch, useSelector } from "react-redux";
+import { useFetchDataQuery } from "../redux/fetchAllData";
 
 const Flight = () => {
   const dispatch = useDispatch();
-  
+
   const alldata = useSelector((state) => state.allData.allDataArray)
   const displayArray = useSelector((state) => state.displayArray.displayArray)
   const brand = useSelector((state) => state.brand.brandArray)
@@ -18,7 +19,10 @@ const Flight = () => {
 
   useEffect(() => {
     FinalOfferingsUpdater(displayArray, brand, flightNo, alldata, dispatch, flight, minPrice, maxPrice)
+    console.log('loooging here ')
   }, [brand, flightNo, flight, maxPrice]);
+
+  const { data, error, isLoading } = useFetchDataQuery();
 
 
 
@@ -32,6 +36,8 @@ const Flight = () => {
       setShowDetails(id);
     }
   }
+
+  
 
   return (
     <div className="xl:flex gap-32 justify-center">

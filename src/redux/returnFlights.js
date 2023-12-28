@@ -8,8 +8,8 @@ export const returnFlightsArraySlice = createSlice({
   initialState,
   reducers: {
     joinreturnFlightsArray: (state, action) => {
-      const newarr=[...state.returnFlightsArray,action.payload];
-      state.returnFlightsArray=[...newarr];
+      const newarr = [...state.returnFlightsArray, action.payload];
+      state.returnFlightsArray = [...newarr];
     },
   },
 })
